@@ -1,17 +1,17 @@
 from prometheus_api_client import PrometheusConnect
 
-def diag(prometheus_address, promql_filters):
+def diag(prometheus_url, promql_filters):
   """
   Query prometheus and (TODO)raise alarm.
   """
 
   # TODO PromQL should be filtered by, e.g. namespace
 
-  if prometheus_address is None:
-    print("\n>>skip diag prometheus because prometheus_address is not specified")
+  if prometheus_url is None:
+    print("\n>>skip diag prometheus because prometheus_url is not specified")
     return
   print("\n>>diag prometheus")
-  prometheus = PrometheusConnect(url=f'http://{prometheus_address}')
+  prometheus = PrometheusConnect(url=prometheus_url)
 
   metric_data = prometheus.custom_query(query=f'topk(3, rate(stream_source_output_rows_counts{{{promql_filters}}}[10m]))')
   print(f"\nSource Throughput(rows/s)\n{metric_data}")

@@ -8,7 +8,7 @@ The diagnostic data includes:
 
 ## Example
 ```shell
-python run.py --connection_string "host=localhost port=4566 dbname=dev user=root" --prometheus_address "127.0.0.1:9500"
+python run.py --connection_string "host=localhost port=4566 dbname=dev user=root" --prometheus_url "http://127.0.0.1:9500" --promql_filters "namespace='cluster_namespace'"
 ```
 The output should be like:
 [report.txt](https://github.com/zwang28/rw-diag/files/13561775/report.txt)
