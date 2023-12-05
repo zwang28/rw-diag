@@ -1,1 +1,1 @@
-python3 run.py --prometheus_address 127.0.0.1:9500
+python3 run.py --prometheus_address "127.0.0.1:9500"
