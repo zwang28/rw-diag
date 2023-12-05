@@ -10,7 +10,10 @@ The diagnostic data includes:
 ```shell
 python run.py --connection_string "host=localhost port=4566 dbname=dev user=root" --prometheus_address "127.0.0.1:9500"
 ```
+The output should be like:
+[report.txt](https://github.com/zwang28/rw-diag/files/13561775/report.txt)
 
 **Note that if RisingWave is deployed on Kubernetes, the script above should be run in the same cluster**. Otherwise, it may fail due to the inability to resolve the domain names of worker nodes.
 
 Both `connection_string` and `prometheus_address` are optional. Corresponding diagnostic data won't be collected if it is not specified.
+
