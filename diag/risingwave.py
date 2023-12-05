@@ -1,5 +1,6 @@
 import psycopg2
 import json
+import sys
 
 def diag(connection_string):
   """
@@ -69,8 +70,15 @@ FROM     sst_delete_ratio
 ORDER BY delete_ratio DESC
 LIMIT 10;
                            ''')
-  
+
 def query_and_print_all_rows(cursor, sql):
+  try:
+    query_and_print_all_rows_impl(cursor, sql)
+  except Exception as e:
+    print(f"failed: {sql}. {e}", file=sys.stderr)
+    pass
+
+def query_and_print_all_rows_impl(cursor, sql):
   from datetime import datetime
   from decimal import Decimal
   class SimpleEncoder(json.JSONEncoder):
@@ -94,6 +102,13 @@ def query_and_print_all_rows(cursor, sql):
     print(row_values)
 
 def query_count(cursor, sql):
+  try:
+     query_count_impl(cursor, sql)
+  except Exception as e:
+    print(f"failed: {sql}. {e}", file=sys.stderr)
+    pass
+
+def query_count_impl(cursor, sql):
   cursor.execute(sql)
   count = cursor.fetchone()[0]
   return int(count)
