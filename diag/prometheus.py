@@ -5,7 +5,7 @@ def diag(prometheus_url, promql_filters):
   Query prometheus and (TODO)raise alarm.
   """
 
-  # TODO PromQL should be filtered by, e.g. namespace
+  # TODO handle auth
 
   if prometheus_url is None:
     print("\n>>skip diag prometheus because prometheus_url is not specified")

@@ -6,7 +6,7 @@ The diagnostic data includes:
 - Basic cluster info queried from rw_catalog.
 - Noteworthy metrics queried from Prometheus.
 
-## Example
+## Usage
 ```shell
 python run.py --connection_string "host=localhost port=4566 dbname=dev user=root" --prometheus_url "http://127.0.0.1:9500" --promql_filters "namespace='cluster_namespace'"
 ```
@@ -17,3 +17,7 @@ The output should be like:
 
 Both `connection_string` and `prometheus_address` are optional. Corresponding diagnostic data won't be collected if it is not specified.
 
+`promql_filters` should be correctly set to filter out metrics that don't belong to this cluster in the same Prometheus server.
+
+## Known Issue
+Prometheus auth is not supported yet.

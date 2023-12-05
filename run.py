@@ -4,6 +4,12 @@ sys.path.append('proto-gen')
 import argparse
 from diag import risingwave, prometheus, await_tree
 
+def ignore_exception(f):
+  try:
+    f()
+  except:
+    pass
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(
                     prog='risingwave diagnose')
@@ -12,6 +18,6 @@ if __name__ == "__main__":
   parser.add_argument('--promql_filters', default='job!=""')
   args = parser.parse_args()
 
-  risingwave.diag(args.connection_string)
-  prometheus.diag(args.prometheus_url, args.promql_filters)
-  await_tree.diag(args.connection_string)
+  ignore_exception(risingwave.diag(args.connection_string))
+  ignore_exception(await_tree.diag(args.connection_string))
+  ignore_exception(prometheus.diag(args.prometheus_url, args.promql_filters))
