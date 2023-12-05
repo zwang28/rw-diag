@@ -2,6 +2,9 @@ import psycopg2
 import json
 
 def diag(connection_string):
+  """
+  Query rw_catalog and (TODO)raise alarm..
+  """
   if connection_string is None:
     print("\n>>skip diag risingwave because connection_string is not specified")
     return

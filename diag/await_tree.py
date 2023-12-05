@@ -3,23 +3,22 @@ import io
 import monitor_service_pb2_grpc
 import monitor_service_pb2
 import grpc
-import meta_pb2_grpc
-import meta_pb2
+import psycopg2
 
-def diag(meta_node_address, compute_node_addresses):
+def diag(connection_string):
   """
-  Collect trace files from all compute nodes and find the problematic actors if any.
+  Collect trace files from all compute nodes and find the suspicious actors if any.
   """
-  if meta_node_address is None and compute_node_addresses is None:
-    print("\n>>skip diag await tree because neither meta_node_address or compute_node_addresses is specified")
+  if connection_string is None:
+    print("\n>>skip diag await tree because connection_string is not specified")
     return
   print("\n>>diag await tree")
-  if compute_node_addresses is None:
-    # Get actor traces from all compute nodes.
-    with grpc.insecure_channel(meta_node_address) as channel:
-      stub = meta_pb2_grpc.ClusterServiceStub(channel)
-      response = stub.ListAllNodes(meta_pb2.ListAllNodesRequest(worker_type=2))
-      compute_node_addresses = list(map(lambda c: "{}:{}".format(c.host.host,c.host.port), response.nodes))
+  conn = psycopg2.connect(connection_string)
+  cursor = conn.cursor()
+
+  cursor.execute("select concat(host::varchar,':',port::varchar) from rw_worker_nodes where type='WORKER_TYPE_COMPUTE_NODE';")
+  compute_node_addresses = list(map(lambda r: r[0], cursor.fetchall()))
+
   actor_traces = {}
   for compute_node_addr in compute_node_addresses:
     with grpc.insecure_channel(compute_node_addr) as channel:

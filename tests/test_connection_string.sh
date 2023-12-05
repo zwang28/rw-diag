@@ -1,0 +1,1 @@
+python3 run.py  --connection_string "host=localhost port=4566 dbname=dev user=root"
