@@ -28,7 +28,7 @@ def diag(connection_string):
         actor_traces[actor_id] = ActorTrace(actor_id, trace_text)
   report(actor_traces)
 
-trace_line_pattern = re.compile(r"^(?P<span_name>.*) \[!*(?P<duration>\s?[\d\.]*)(?P<unit>s|ms)\](  <== current)?$")
+trace_line_pattern = re.compile(r"^(?P<span_name>.*) \[!*(?P<duration>\s?[\d\.]*)(?P<unit>s|ms|(.*))\](  <== current)?$")
 epoch_node_pattern = re.compile(r"^Epoch (?P<epoch>\d+)$")
 output_node_pattern = re.compile(r"^(LocalOutput|RemoteOutput) \(actor (?P<actor_id>\d+)\)$")
 
@@ -39,8 +39,15 @@ class ActorTrace:
     self.epoch = None
     self.epoch_duration_sec = None
     self.downstream_actor_id = None
+    skip_detached = False
     for trace_line in io.StringIO(trace_text):
       if len(trace_line) == 0:
+        continue
+      if trace_line.startswith("[Detached"):
+        skip_detached = True
+        continue
+      if skip_detached:
+        skip_detached = False
         continue
       node = ActorTraceNode(trace_line.strip())
       self.add_node(node)
@@ -93,7 +100,8 @@ class ActorTraceNode:
     elif self.unit == 's':
       self.duration_sec = float(self.duration)
     else:
-      raise Exception("unexpected unit {}".format(self.unit))
+      # microsecond and nanosecond
+      self.duration_sec = float(0)
 
   def __str__(self) -> str:
     return "{} [{}{}]".format(self.span_name, self.duration, self.unit)

@@ -4,6 +4,9 @@ def diag(prometheus_address):
   """
   Query prometheus and (TODO)raise alarm.
   """
+
+  # TODO PromQL should be filtered by, e.g. namespace
+
   if prometheus_address is None:
     print("\n>>skip diag prometheus because prometheus_address is not specified")
     return

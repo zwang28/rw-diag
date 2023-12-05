@@ -62,7 +62,7 @@ WITH sst_delete_ratio AS
           level_id,
           sub_level_id,
           range_tombstone_count * 1.0 / total_key_count AS range_delete_ratio,
-    stale_key_count * 1.0 / total_key_count AS delete_ratio
+          stale_key_count * 1.0 / total_key_count AS delete_ratio
    FROM   rw_catalog.rw_hummock_sstables
 )
 SELECT   *
@@ -95,15 +95,15 @@ def query_and_print_all_rows_impl(cursor, sql):
      return
   column_names = [desc[0] for desc in cursor.description]
   column_widths = [max(len(str(row[i])) for row in rows + [column_names]) for i in range(len(column_names))]
-  header = "  ".join(f"{name:{width}}" for name, width in zip(column_names, column_widths))
+  header = "  ".join(f"{name:<{width}}" for name, width in zip(column_names, column_widths))
   print(header)
   for row in rows:
-    row_values = "  ".join(f"{json.dumps(value, cls=SimpleEncoder):{width}}" if value is not None else "" for value, width in zip(row, column_widths))
+    row_values = "  ".join(f"{str(value):<{width}}" for value, width in zip(row, column_widths))
     print(row_values)
 
 def query_count(cursor, sql):
   try:
-     query_count_impl(cursor, sql)
+     return query_count_impl(cursor, sql)
   except Exception as e:
     print(f"failed: {sql}. {e}", file=sys.stderr)
     pass
