@@ -8,7 +8,7 @@ import meta_pb2
 
 def diag(meta_node_address, compute_node_addresses):
   """
-  Collect trace files from all compute nodes and parse them.
+  Collect trace files from all compute nodes and find the problematic actors if any.
   """
   if meta_node_address is None and compute_node_addresses is None:
     print("\n>>skip diag await tree because neither meta_node_address or compute_node_addresses is specified")
