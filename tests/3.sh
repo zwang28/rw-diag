@@ -1,0 +1,1 @@
+python3 run.py --meta_node_address="127.0.0.1:5690" --compute_node_address="127.0.0.1:5688"

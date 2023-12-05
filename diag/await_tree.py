@@ -1,6 +1,3 @@
-import sys
-sys.path.append('proto-gen')
-
 import re
 import io
 import monitor_service_pb2_grpc
@@ -9,21 +6,22 @@ import grpc
 import meta_pb2_grpc
 import meta_pb2
 
-def diag_await_tree(meta_node_addr):
+def diag(meta_node_address, compute_node_addresses):
   """
   Collect trace files from all compute nodes and parse them.
   """
-  if meta_node_addr is None:
+  if meta_node_address is None and compute_node_addresses is None:
+    print("\n>>skip diag await tree because neither meta_node_address or compute_node_addresses is specified")
     return
   print("\n>>diag await tree")
-  # Get actor traces from all compute nodes.
-  with grpc.insecure_channel(meta_node_addr) as channel:
-    stub = meta_pb2_grpc.ClusterServiceStub(channel)
-    response = stub.ListAllNodes(meta_pb2.ListAllNodesRequest(worker_type=2))
-    compute_nodes = response.nodes
+  if compute_node_addresses is None:
+    # Get actor traces from all compute nodes.
+    with grpc.insecure_channel(meta_node_address) as channel:
+      stub = meta_pb2_grpc.ClusterServiceStub(channel)
+      response = stub.ListAllNodes(meta_pb2.ListAllNodesRequest(worker_type=2))
+      compute_node_addresses = list(map(lambda c: "{}:{}".format(c.host.host,c.host.port), response.nodes))
   actor_traces = {}
-  for compute_node in compute_nodes:
-    compute_node_addr = "{}:{}".format(compute_node.host.host,compute_node.host.port)
+  for compute_node_addr in compute_node_addresses:
     with grpc.insecure_channel(compute_node_addr) as channel:
       stub = monitor_service_pb2_grpc.MonitorServiceStub(channel)
       response = stub.StackTrace(monitor_service_pb2.StackTraceRequest())
