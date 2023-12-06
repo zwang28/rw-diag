@@ -13,7 +13,7 @@ def diag(prometheus_url, promql_filters):
   print("\n>>diag prometheus")
   prometheus = PrometheusConnect(url=prometheus_url)
 
-  metric_data = prometheus.custom_query(query=f'topk(3, rate(stream_source_output_rows_counts{{{promql_filters}}}[10m]))')
+  metric_data = prometheus.custom_query(query=f'topk(3, rate(stream_source_output_rows_counts{{{promql_filters}}}[10m])) by (source_name)')
   print(f"\nSource Throughput(rows/s)\n{metric_data}")
 
   metric_data = prometheus.custom_query(query=f'topk(3, sum(rate(stream_mview_input_row_count{{{promql_filters}}}[10m])) by (table_id) * on(table_id) group_left(table_name) group(table_info) by (table_id, table_name))')
