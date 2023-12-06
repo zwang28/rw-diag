@@ -15,6 +15,6 @@ The output should be like:
 
 **Note that if RisingWave is deployed on Kubernetes, the script above should be run in the same cluster**. Otherwise, it may fail due to the inability to resolve the domain names of worker nodes.
 
-Both `connection_string` and `prometheus_address` are optional. Corresponding diagnostic data won't be collected if it is not specified.
+Both `connection_string` and `prometheus_url` are optional. Corresponding diagnostic data won't be collected if it is not specified.
 
 `promql_filters` should be correctly set to filter out metrics that don't belong to this cluster in the same Prometheus server.
