@@ -152,7 +152,9 @@ def parse_trace_file(file_path):
         state = State.PROCESSING
       elif state == State.PROCESSING:
         if len(line) == 0:
-          actor_traces[actor_id] = ActorTrace(actor_id, trace_text)
+          actor_trace = ActorTrace(actor_id, trace_text)
+          if actor_trace.epoch is not None:
+            actor_traces[actor_id] = actor_trace
           actor_id = None
           trace_text = ""
           state = State.START
