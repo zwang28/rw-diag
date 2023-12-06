@@ -25,7 +25,10 @@ def diag(connection_string):
       stub = monitor_service_pb2_grpc.MonitorServiceStub(channel)
       response = stub.StackTrace(monitor_service_pb2.StackTraceRequest())
       for actor_id, trace_text in response.actor_traces.items():
-        actor_traces[actor_id] = ActorTrace(actor_id, trace_text)
+        actor_trace = ActorTrace(actor_id, trace_text)
+        if actor_trace.epoch is None:
+          continue
+        actor_traces[actor_id] = actor_trace
   report(actor_traces)
 
 trace_line_pattern = re.compile(r"^(?P<span_name>.*) \[!*(?P<duration>\s?[\d\.]*)(?P<unit>s|ms|(.*))\](  <== current)?$")
